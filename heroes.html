@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Panduan lengkap semua hero Mobile Legends - skill, lore, dan video cara bermain. LR Store top up diamond ML murah."/>
+  <meta name="keywords" content="hero mobile legends, skill hero ml, panduan hero ml, cara main hero ml, build hero ml"/>
+  <title>Hero Mobile Legends Lengkap | LR Store</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-lr">LR</span><span class="logo-store">STORE</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="heroes.html" class="nav-link active">Heroes ML</a>
+      <a href="index.html#layanan" class="nav-link">Layanan</a>
+      <a href="index.html#cara-topup" class="nav-link">Cara Top Up</a>
+    </div>
+    <div class="nav-actions">
+      <a href="https://lrstore.id/id/sign-in" class="btn-login" target="_blank">Login</a>
+      <a href="https://lrstore.id/id/sign-up" class="btn-daftar" target="_blank">Daftar</a>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="heroes-header">
+  <div class="section-tag">Mobile Legends Bang Bang</div>
+  <h1>PANDUAN LENGKAP <span class="gold">HERO ML</span></h1>
+  <p>Klik hero untuk melihat skill lengkap dan video cara bermain</p>
+</div>
+
+<!-- FILTERS -->
+<div class="heroes-filters" id="heroFilters">
+  <button class="role-btn active" onclick="filterHero('all', this)">Semua</button>
+  <button class="role-btn" onclick="filterHero('Fighter', this)">⚔️ Fighter</button>
+  <button class="role-btn" onclick="filterHero('Assassin', this)">🗡️ Assassin</button>
+  <button class="role-btn" onclick="filterHero('Mage', this)">🔮 Mage</button>
+  <button class="role-btn" onclick="filterHero('Tank', this)">🛡️ Tank</button>
+  <button class="role-btn" onclick="filterHero('Marksman', this)">🏹 Marksman</button>
+  <button class="role-btn" onclick="filterHero('Support', this)">💚 Support</button>
+</div>
+
+<!-- HERO GRID -->
+<div class="heroes-grid" id="heroGrid"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="heroModal">
+    <div class="modal-header">
+      <div class="modal-emoji" id="mEmoji"></div>
+      <div class="modal-title">
+        <h2 id="mName"></h2>
+        <div class="modal-role" id="mRole"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-lore" id="mLore"></div>
+      <div class="modal-skills">
+        <h3>⚡ Skill &amp; Kemampuan</h3>
+        <div id="mSkills"></div>
+      </div>
+      <div class="modal-video">
+        <h3>🎬 Video Cara Bermain</h3>
+        <div id="mVideo"></div>
+      </div>
+      <div class="modal-topup">
+        <p>Butuh <strong>Diamond ML</strong> untuk beli skin hero ini?</p>
+        <a href="https://lrstore.id" class="btn-primary" target="_blank" style="font-size:12px;padding:9px 20px">Top Up Sekarang →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER MINI -->
+<div style="text-align:center;padding:32px 16px;border-top:1px solid rgba(240,192,64,0.1);margin-top:20px">
+  <a href="index.html" class="btn-outline">← Kembali ke Beranda</a>
+  <a href="https://lrstore.id" class="btn-primary" target="_blank" style="margin-left:12px">Top Up Diamond ML</a>
+</div>
+
+<script>
+// ===== DATA HERO ML =====
+// youtube_id: Isi dengan ID video YouTube kamu (contoh: "dQw4w9WgXcQ")
+// Kosongkan string "" jika belum ada video
+const HEROES = [
+  // FIGHTER
+  { name:"Balmond", role:"Fighter", emoji:"🪓", lore:"Manusia setengah iblis dari Blood Tribe yang haus akan kekuatan. Menggunakan kapak besar untuk menghancurkan musuh.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Soul Lock",type:"Pasif",desc:"Setiap serangan dasar memberikan efek Ablaze pada musuh. Stack hingga 3 kali, lalu meledak dan memberikan damage tambahan."},
+    {icon:"⚡",name:"Cyclone Sweep",type:"Skill 1",desc:"Balmond berputar dan mengayunkan kapaknya, memberikan damage fisik ke semua musuh di sekitarnya. Jarak pendek tapi area besar."},
+    {icon:"💨",name:"Soul Steal",type:"Skill 2",desc:"Maju ke depan dan menyerang musuh, setiap kill atau assist memulihkan HP Balmond."},
+    {icon:"💀",name:"Deadly Blow",type:"Ultimate",desc:"Melompat ke udara dan menghantam tanah dengan kapak besar, memberikan damage massif. Damage meningkat berdasarkan HP yang hilang musuh."},
+  ]},
+  { name:"Alucard", role:"Fighter", emoji:"🧛", lore:"Sang pemburu setan yang memiliki kekuatan supranatural. Jatuh cinta pada Zilong dalam pertarungan sengit.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Pursuit",type:"Pasif",desc:"Serangan tunggal ke musuh meningkatkan lifesteal secara signifikan untuk beberapa detik."},
+    {icon:"⚡",name:"Groundsplitter",type:"Skill 1",desc:"Melompat ke depan dan memberikan damage kepada musuh di lintasan. Bisa digunakan untuk mengejar musuh yang kabur."},
+    {icon:"🌀",name:"Whirling Smash",type:"Skill 2",desc:"Berputar dan menyerang semua musuh di sekitar, memberikan damage area dan slow."},
+    {icon:"🩸",name:"Fission Wave",type:"Ultimate",desc:"Membangkitkan kekuatan setan, meningkatkan lifesteal dan armor drastis. Menjadi hampir tidak bisa dibunuh selama durasi."},
+  ]},
+  { name:"Minsitthar", role:"Fighter", emoji:"👑", lore:"Raja prajurit dari kerajaan kuno yang menggunakan tombak dan perisai untuk mendominasi medan perang.", youtube_id:"", skills:[
+    {icon:"🔴",name:"King's Sword",type:"Pasif",desc:"Serangan dasar ketiga memberikan damage tambahan dan slow pada musuh."},
+    {icon:"⚡",name:"Spear of Glory",type:"Skill 1",desc:"Melempar tombak ke depan, menarik musuh yang terkena ke posisi Minsitthar."},
+    {icon:"🛡️",name:"Shield Assault",type:"Skill 2",desc:"Maju ke depan dengan perisai, memberikan damage dan stun pada musuh yang dilewati."},
+    {icon:"👑",name:"King's Calling",type:"Ultimate",desc:"Memanggil 4 prajurit kerajaan untuk bertarung bersama, menciptakan zona yang mencegah musuh menggunakan dash/blink skill."},
+  ]},
+  { name:"Esmeralda", role:"Fighter", emoji:"💙", lore:"Penjaga kristal kuno yang mampu mengubah shield menjadi senjata mematikan.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Starmoon Casket",type:"Pasif",desc:"Skill Esmeralda tidak hanya memberikan damage tapi juga mengonversi shield musuh menjadi HP tambahan untuk dirinya."},
+    {icon:"⚡",name:"Frostmoon Shield",type:"Skill 1",desc:"Melemparkan perisai ke target, memberikan damage dan magic burn. Shield yang terkena langsung diserap."},
+    {icon:"🌊",name:"Stardust Dance",type:"Skill 2",desc:"Berputar sambil melempar perisai ke semua arah, memberikan damage area dan menyerap shield."},
+    {icon:"🌙",name:"Falling Starmoon",type:"Ultimate",desc:"Menjadi invincible sejenak lalu meluncur ke target, memberikan damage besar dan shield kepada diri sendiri."},
+  ]},
+  { name:"Leomord", role:"Fighter", emoji:"🐴", lore:"Ksatria pengkhianat yang dikutuk menjadi setengah manusia setengah kuda hantu.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Momentum",type:"Pasif",desc:"Saat HP di bawah 50%, kecepatan serangan dan damage meningkat drastis."},
+    {icon:"⚡",name:"Momentum Charge",type:"Skill 1",desc:"Maju ke depan, memberikan damage dan slow kepada musuh yang dilewati."},
+    {icon:"💨",name:"Decimation Assault",type:"Skill 2",desc:"Melompat ke target dan memberikan damage, jika musuh mati segera mendapatkan reset cooldown."},
+    {icon:"🐴",name:"Phantom Steed",type:"Ultimate",desc:"Memanggil kuda hantu dan berubah menjadi penunggang kuda, meningkatkan semua stat dan mengubah skill menjadi lebih kuat."},
+  ]},
+  { name:"Ruby", role:"Fighter", emoji:"🌹", lore:"Gadis pemberani bersenjata sabit besar yang melindungi keluarga dengan pengorbanan dirinya.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Let's Dance!",type:"Pasif",desc:"Setiap skill memberikan lifesteal berdasarkan damage yang diberikan. Makin banyak musuh terkena, makin besar heal."},
+    {icon:"⚡",name:"Be Good",type:"Skill 1",desc:"Melompat ke depan sambil mengayunkan sabit, memberikan damage dua kali dan menarik musuh ke tengah."},
+    {icon:"🌀",name:"Don't Run, Wolf King!",type:"Skill 2",desc:"Berputar dua kali dengan sabit besar, memberikan damage besar ke area dan slow."},
+    {icon:"🌹",name:"I'm Offended!",type:"Ultimate",desc:"Menyerang ke depan tiga kali, setiap serangan menarik musuh dan memberikan damage. Susah kabur dari Ruby."},
+  ]},
+  { name:"Paquito", role:"Fighter", emoji:"🥊", lore:"Petinju jalanan yang menggunakan kecepatan dan teknik tinju untuk menghancurkan lawan.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Champ Stance",type:"Pasif",desc:"Mengumpulkan stack dari setiap skill, setelah 4 stack skill berikutnya mendapat upgrade dan cooldown dihapus."},
+    {icon:"⚡",name:"Heavy Left Punch",type:"Skill 1",desc:"Maju ke depan memberikan uppercut, versi upgrade memberikan damage lebih besar dan area lebih luas."},
+    {icon:"🥊",name:"Jab",type:"Skill 2",desc:"Memberikan pukulan cepat yang mendorong musuh, versi upgrade memberikan knockback lebih jauh."},
+    {icon:"💥",name:"Knockout Strike",type:"Ultimate",desc:"Kombinasi pukulan dahsyat yang mengakhiri dengan uppercut besar, memberikan damage massif dan knockback jauh."},
+  ]},
+  { name:"Zilong", role:"Fighter", emoji:"🐉", lore:"Putra naga legendaris yang mewarisi kekuatan dan tombak suci untuk melindungi keadilan.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Dragon Flurry",type:"Pasif",desc:"Setiap 8 detik, serangan dasar berikutnya memberikan 2 serangan cepat berturut-turut."},
+    {icon:"⚡",name:"Spear Flip",type:"Skill 1",desc:"Melompat ke belakang musuh dan membaliknya, memberikan damage dan stun singkat."},
+    {icon:"💨",name:"Spear Strike",type:"Skill 2",desc:"Melempar tombak ke musuh terdekat, memberikan damage dan menambah stack Pasif."},
+    {icon:"🐉",name:"Supreme Warrior",type:"Ultimate",desc:"Meningkatkan kecepatan gerak dan serangan drastis, serta menghilangkan semua efek slow selama durasi."},
+  ]},
+
+  // ASSASSIN
+  { name:"Lancelot", role:"Assassin", emoji:"🤺", lore:"Ksatria paling tampan dari Kastil Grandeur yang ahli dalam teknik pedang tercepat.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Soul Cutter",type:"Pasif",desc:"Saat Lancelot terkena damage, armor penetrasi meningkat sementara untuk serangan berikutnya."},
+    {icon:"⚡",name:"Puncture",type:"Skill 1",desc:"Maju ke depan dan menusuk musuh, memberikan damage dan menandai musuh. Bisa digunakan 3 kali berturut-turut."},
+    {icon:"🌀",name:"Thorned Rose",type:"Skill 2",desc:"Berputar dan menciptakan area damage serta menandai musuh yang terkena."},
+    {icon:"🗡️",name:"Phantom Execution",type:"Ultimate",desc:"Menjadi tak terkalahkan sejenak sambil melakukan serangan kilat ke semua musuh yang ditandai."},
+  ]},
+  { name:"Hayabusa", role:"Assassin", emoji:"🥷", lore:"Ninja bayangan dari klan Scarlet Shadow yang menguasai seni shadow kill.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Ninjutsu: Trace of Shadow",type:"Pasif",desc:"Setiap skill meninggalkan bayangan. Semakin banyak bayangan, semakin tinggi damage bonus Hayabusa."},
+    {icon:"⚡",name:"Phantom Shuriken",type:"Skill 1",desc:"Melempar shuriken yang bisa memantul ke beberapa musuh, meninggalkan bayangan di setiap target."},
+    {icon:"💨",name:"Ninjutsu: Quad Shadow",type:"Skill 2",desc:"Berpindah ke salah satu bayangan yang ada, bisa digunakan untuk escape atau engage."},
+    {icon:"🥷",name:"Ougi: Shadow Kill",type:"Ultimate",desc:"Menjadi bayangan dan melakukan serangan berulang ke satu target, tidak bisa diganggu selama ultimate."},
+  ]},
+  { name:"Gusion", role:"Assassin", emoji:"✨", lore:"Putra bangsawan yang menjual jiwanya demi kekuatan sihir untuk membalas dendam.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Dagger Specialist",type:"Pasif",desc:"Serangan dasar memberikan HP regen bonus. Skill yang mengenai musuh yang sama berulang meningkatkan damage."},
+    {icon:"⚡",name:"Sword Spike",type:"Skill 1",desc:"Melempar belati ke depan, bisa diklik lagi untuk teleport ke posisi belati."},
+    {icon:"🌀",name:"Shadowblade Slaughter",type:"Skill 2",desc:"Melempar 5 belati ke arah depan dalam pola lebar, memberikan damage ke semua yang terkena."},
+    {icon:"✨",name:"Incandescence",type:"Ultimate",desc:"Mengumpulkan semua belati yang tersebar dan menarik musuh ke posisi Gusion, memberikan damage massif."},
+  ]},
+  { name:"Ling", role:"Assassin", emoji:"🍃", lore:"Pendekar pedang dengan kemampuan melompat antar dinding yang tidak tertandingi.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Cloud Walker",type:"Pasif",desc:"Ling memiliki bar energi khusus. Berada di dinding mengisi energi dan memberikan stack Lightness."},
+    {icon:"⚡",name:"Finch Poise",type:"Skill 1",desc:"Melompat ke dinding terdekat dan menembakkan pedang ke arah bawah, memberikan damage."},
+    {icon:"💨",name:"Defiant Sword",type:"Skill 2",desc:"Melompat dari dinding sambil menyerang, memberikan damage ke musuh yang terkena."},
+    {icon:"❄️",name:"Tempest of Blades",type:"Ultimate",desc:"Melompat ke udara dan membuat zona beku, musuh dalam zona tidak bisa menggunakan Blink skill."},
+  ]},
+  { name:"Natalia", role:"Assassin", emoji:"🐱", lore:"Agen rahasia berbahaya yang bergerak dalam keheningan untuk mengeksekusi target.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Assassin Instinct",type:"Pasif",desc:"Saat berada di semak atau tidak menyerang, Natalia menjadi tidak terlihat. Serangan pertama dari invisible memberikan silence."},
+    {icon:"⚡",name:"Claw Dash",type:"Skill 1",desc:"Maju cepat ke depan dan menyerang, bisa digunakan untuk engage atau escape."},
+    {icon:"🌀",name:"Smoke Bomb",type:"Skill 2",desc:"Melempar bom asap, memberikan buff kepada diri sendiri dan mengurangi akurasi musuh dalam area."},
+    {icon:"🗡️",name:"The Hunt",type:"Ultimate",desc:"Memilih target dan mengunci posisi, kemudian melakukan serangkaian serangan cepat tak terhindarkan."},
+  ]},
+  { name:"Helcurt", role:"Assassin", emoji:"🕷️", lore:"Makhluk kegelapan yang lahir dari dimensi lain, membawa kegelapan total ke medan perang.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Dark Night Falls",type:"Pasif",desc:"Saat ultimate aktif, musuh tidak bisa menggunakan skill apapun dalam radius tertentu."},
+    {icon:"⚡",name:"Shadow Rush",type:"Skill 1",desc:"Teleport ke lokasi target dan memberikan damage, juga memberikan silence singkat."},
+    {icon:"💀",name:"Deadly Stinger",type:"Skill 2",desc:"Menembak duri beracun, mengumpulkan stack untuk meningkatkan damage."},
+    {icon:"🌑",name:"Dark Night Falls",type:"Ultimate",desc:"Mematikan seluruh minimap tim lawan dan memberikan kecepatan bergerak tinggi kepada diri sendiri."},
+  ]},
+  { name:"Karina", role:"Assassin", emoji:"💜", lore:"Penari berdarah vampir yang menggunakan sabit kembar untuk menyedot nyawa musuh.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Combo Hit",type:"Pasif",desc:"Serangan dasar ketiga memberikan damage magis tambahan yang tinggi."},
+    {icon:"⚡",name:"Dance of Blades",type:"Skill 1",desc:"Berputar cepat ke depan, menjadi immune terhadap serangan jarak jauh selama pergerakan."},
+    {icon:"🌀",name:"Dance of Death",type:"Skill 2",desc:"Berputar dan memberikan damage magis ke semua musuh sekitar, bisa distack."},
+    {icon:"💜",name:"Death Raid",type:"Ultimate",desc:"Melompat ke musuh dan memberikan damage besar. Cooldown reset jika musuh mati dalam 5 detik setelah Ultimate."},
+  ]},
+
+  // MAGE
+  { name:"Kagura", role:"Mage", emoji:"☂️", lore:"Pendeta muda pemilik payung Seimei yang berisi roh kuno dengan kekuatan dahsyat.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Yin Yang Overturn",type:"Pasif",desc:"Skill berubah bergantung posisi payung - jika payung dilempar, skill berubah menjadi berbasis payung."},
+    {icon:"⚡",name:"Seimei Umbrella Open",type:"Skill 1",desc:"Melempar payung ke depan yang memberikan slow. Bisa teleport ke payung atau memanggil kembali."},
+    {icon:"🌀",name:"Rasho Umbrella Flee",type:"Skill 2",desc:"Berpindah posisi dengan payung, memberikan damage dan knockback kepada musuh sekitar."},
+    {icon:"☂️",name:"Yin Yang Overturn",type:"Ultimate",desc:"Menggunakan kekuatan payung untuk memberikan damage besar ke area dan menarik semua musuh ke tengah."},
+  ]},
+  { name:"Lunox", role:"Mage", emoji:"⭐", lore:"Dewi cahaya dan kegelapan yang merupakan penjaga keseimbangan alam semesta.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Dreamland Twist",type:"Pasif",desc:"Mengumpulkan stack Chaos dan Order secara bergantian untuk meningkatkan kekuatan skill."},
+    {icon:"⚡",name:"Starlight Pulse",type:"Skill 1",desc:"Menembakkan bintang cahaya ke depan, memberikan damage magis dan slow."},
+    {icon:"🌑",name:"Chaos Assault",type:"Skill 2",desc:"Menembakkan energi kegelapan ke depan, memberikan damage dan mengurangi magic resistance musuh."},
+    {icon:"⭐",name:"Brilliance / Darkening",type:"Ultimate",desc:"Dua mode ultimate: Mode Brilliance memberikan invincibility, Mode Darkening memberikan damage massif berulang."},
+  ]},
+  { name:"Eudora", role:"Mage", emoji:"⚡", lore:"Mage petir yang mempelajari seni penguasaan listrik dari gurunya yang legendaris.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Superconductor",type:"Pasif",desc:"Skill Eudora memberikan stack Superconductor pada musuh, meningkatkan damage skill berikutnya."},
+    {icon:"⚡",name:"Ball Lightning",type:"Skill 1",desc:"Melempar bola petir yang memberikan damage dan stack. Bisa digunakan untuk harass efektif."},
+    {icon:"🌩️",name:"Electric Arrow",type:"Skill 2",desc:"Menembak anak panah listrik yang memberikan stun dan menambah stack."},
+    {icon:"⚡",name:"Thunder's Wrath",type:"Ultimate",desc:"Menghantam target dengan petir dahsyat, damage meningkat berdasarkan jumlah stack Superconductor."},
+  ]},
+  { name:"Harith", role:"Mage", emoji:"🦁", lore:"Catfolk berbakat yang menguasai ilmu astral kuno untuk memanipulasi waktu dan ruang.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Key Insight",type:"Pasif",desc:"Saat menggunakan skill, cooldown skill lain berkurang. Makin banyak musuh di dekat, makin besar pengurangan."},
+    {icon:"⚡",name:"Synchro Fission",type:"Skill 1",desc:"Menciptakan bayangan ke depan yang saling bergerak ke arah berlawanan, memberikan damage pada musuh yang dilewati."},
+    {icon:"💨",name:"Chrono Dash",type:"Skill 2",desc:"Melompat ke arah kursor sambil memanggil shield magis, memberikan damage ke musuh di sekitar pendaratan."},
+    {icon:"🌀",name:"Lost Time",type:"Ultimate",desc:"Memanggil dimensi saku yang memperlambat semua musuh dalam area, Harith kebal selama durasi."},
+  ]},
+  { name:"Valentina", role:"Mage", emoji:"🦋", lore:"Penyihir misterius yang mampu mencuri kemampuan musuh dan menggunakannya kembali.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Primal Force",type:"Pasif",desc:"Setiap kali menggunakan skill, mendapatkan tumpukan yang meningkatkan magic power."},
+    {icon:"⚡",name:"Shadow Strike",type:"Skill 1",desc:"Melempar bintang gelap yang memberikan damage dan slow, bisa dicharge untuk damage lebih besar."},
+    {icon:"🌊",name:"Arcane Shade",type:"Skill 2",desc:"Berpindah cepat ke arah kursor sambil meninggalkan bayangan yang memberikan damage."},
+    {icon:"🦋",name:"I Am You",type:"Ultimate",desc:"Menjadi salinan musuh yang dipilih dan menggunakan ultimate milik musuh tersebut."},
+  ]},
+  { name:"Cecilion", role:"Mage", emoji:"🧛", lore:"Count vampir kuno yang mengorbankan kekuatan fisiknya demi kekuatan sihir yang tak terbatas.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Overflowing",type:"Pasif",desc:"Setiap kali skill mengenai musuh, mendapatkan stack yang meningkatkan magic power secara permanen hingga mati."},
+    {icon:"⚡",name:"Bat Impact",type:"Skill 1",desc:"Mengirimkan gelombang kelelawar ke depan, memberikan damage dan slow."},
+    {icon:"🌀",name:"Blood Summon",type:"Skill 2",desc:"Memanggil portal darah yang memberikan damage area terus-menerus di lokasi target."},
+    {icon:"🧛",name:"Bats Feast",type:"Ultimate",desc:"Bersama Carmilla, berdua menjadi pasangan vampir kuat. Cecilion terbang dan memberikan damage masif ke area."},
+  ]},
+
+  // TANK
+  { name:"Tigreal", role:"Tank", emoji:"⚔️", lore:"Pahlawan perang suci yang melindungi rakyat dengan baju besi sakti dan keyakinan teguh.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Sacred Hammer",type:"Pasif",desc:"Setiap kali menggunakan skill menyebabkan serangan dasar berikutnya memberikan stun singkat."},
+    {icon:"⚡",name:"Attack Wave",type:"Skill 1",desc:"Melemparkan gelombang energi ke depan yang memberikan damage dan slow."},
+    {icon:"💨",name:"Sacred Charge",type:"Skill 2",desc:"Maju cepat ke depan dan menghantam musuh ke dinding, memberikan stun jika menghantam dinding."},
+    {icon:"⚔️",name:"Implosion",type:"Ultimate",desc:"Menancapkan pedang ke tanah lalu menarik semua musuh sekitar ke dirinya, memberikan stun."},
+  ]},
+  { name:"Johnson", role:"Tank", emoji:"🚗", lore:"Polisi robot yang dimodifikasi menjadi kendaraan tempur yang bisa dinaiki teman setimnya.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Electromag Rays",type:"Pasif",desc:"Saat HP rendah, mendapatkan shield yang menyerap damage. Serangan dasar memberikan stun singkat."},
+    {icon:"⚡",name:"Steel Sweeper",type:"Skill 1",desc:"Memutar antena dan menyerang musuh sekitar dengan listrik, memberikan damage dan slow."},
+    {icon:"🔧",name:"Rapid Touchdown",type:"Skill 2",desc:"Melompat ke arah target sambil menghantam tanah, memberikan damage dan knockback."},
+    {icon:"🚗",name:"Rapid Touchdown",type:"Ultimate",desc:"Berubah menjadi mobil sport, teman setim bisa naik. Menabrak musuh memberikan stun dan damage berdasarkan kecepatan."},
+  ]},
+  { name:"Khufra", role:"Tank", emoji:"🏺", lore:"Raja gurun mumi kuno yang bangkit dari tidurnya untuk mencari pengkhianat yang mengkhianatinya.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Spell Curse",type:"Pasif",desc:"Setiap 12 detik, serangan dasar memberikan Curse yang memberikan damage magis tambahan."},
+    {icon:"⚡",name:"Tyrant's Revenge",type:"Skill 1",desc:"Menggulung diri menjadi bola dan maju ke depan, musuh yang terkena akan terpental ke udara."},
+    {icon:"🌀",name:"Bouncing Ball",type:"Skill 2",desc:"Membesar sambil melompat, semua dash skill musuh dalam area akan ditolak dan musuh diberi stun."},
+    {icon:"🏺",name:"Tyrant's Rage",type:"Ultimate",desc:"Memukul ke depan dengan kekuatan penuh, mengirim musuh ke udara dan menarik semua musuh di garis lurus."},
+  ]},
+  { name:"Grock", role:"Tank", emoji:"🪨", lore:"Makhluk batu raksasa penjaga hutan yang bertugas melindungi alam dari para penjajah.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Ancestral Gift",type:"Pasif",desc:"Saat berada dekat dinding atau turret, mendapatkan movement speed dan armor bonus."},
+    {icon:"⚡",name:"Power of Nature",type:"Skill 1",desc:"Membenturkan tongkat ke tanah, memberikan damage area dan slow kepada musuh sekitar."},
+    {icon:"🌲",name:"Guardian's Barrier",type:"Skill 2",desc:"Membuat dinding batu yang menghalangi pergerakan. Berguna untuk block musuh atau melindungi turret."},
+    {icon:"🪨",name:"Wild Charge",type:"Ultimate",desc:"Maju ke depan dengan kecepatan tinggi, menerjang semua musuh. Jika menghantam dinding, memberikan stun besar."},
+  ]},
+  { name:"Belerick", role:"Tank", emoji:"🌿", lore:"Guardian hutan kuno berbentuk pohon hidup yang menyerap damage dan melindungi sekutunya.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Lament",type:"Pasif",desc:"Ketika musuh menyerang hero sekutu, Belerick membalas dengan duri yang memberikan damage ke musuh."},
+    {icon:"⚡",name:"Nature's Seed",type:"Skill 1",desc:"Melemparkan benih ajaib ke musuh, benih meledak dan memberikan damage area serta slow."},
+    {icon:"🌀",name:"Wicked Overgrowth",type:"Skill 2",desc:"Tumbuhan raksasa muncul di sekitar musuh yang ditandai, membatasi pergerakannya."},
+    {icon:"🌿",name:"Wrath of Dryad",type:"Ultimate",desc:"Memanggil kekuatan hutan, meningkatkan HP regen dan memberikan aura taunt kepada musuh sekitar."},
+  ]},
+
+  // MARKSMAN
+  { name:"Layla", role:"Marksman", emoji:"🔫", lore:"Gadis muda berbakat yang menciptakan senjata plasma sendiri untuk melindungi rumahnya.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Malefic Bomb",type:"Pasif",desc:"Jarak musuh dari Layla meningkatkan damage bonus. Semakin jauh musuh, semakin sakit serangannya."},
+    {icon:"⚡",name:"Malefic Bomb",type:"Skill 1",desc:"Menembakkan bola energi ke depan, memberikan damage dan slow. Damage meningkat berdasarkan jarak."},
+    {icon:"🌀",name:"Void Projectile",type:"Skill 2",desc:"Melempar granat yang meledak di area, memberikan damage dan mengurangi defense musuh."},
+    {icon:"🔫",name:"Destruction Rush",type:"Ultimate",desc:"Melepaskan tembakan energi plasma super besar yang menembus semua musuh dalam garis lurus dengan jangkauan sangat jauh."},
+  ]},
+  { name:"Granger", role:"Marksman", emoji:"🎸", lore:"Musisi misterius yang menggunakan violin sebagai senjata. Setiap nada adalah peluru kematian.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Capriccio",type:"Pasif",desc:"Setiap 6 peluru di pistol memberikan damage lebih tinggi. Peluru keenam adalah critical yang mematikan."},
+    {icon:"⚡",name:"Rhapsody",type:"Skill 1",desc:"Menembakkan 6 peluru energi ke depan dalam pola spread, peluru ke-6 memberikan critical."},
+    {icon:"💨",name:"Rondo",type:"Skill 2",desc:"Melompat ke arah target sambil menembak, bisa digunakan 2 kali berturut-turut."},
+    {icon:"🎸",name:"Death Sonata",type:"Ultimate",desc:"Mengubah violin menjadi senapan mesin besar dan menembakkan peluru energi massif ke semua arah."},
+  ]},
+  { name:"Wanwan", role:"Marksman", emoji:"🎯", lore:"Gadis pendekar throwing star yang bergerak cepat dan menyerang titik kelemahan musuh.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Needles in Flowers",type:"Pasif",desc:"Setiap musuh memiliki 4 titik lemah. Serang dari berbagai arah untuk membuka semua titik lemah."},
+    {icon:"⚡",name:"Swallow's Path",type:"Skill 1",desc:"Melompat ke arah kursor sambil melempar bintang ke semua musuh sekitar."},
+    {icon:"🌀",name:"Needles in Flowers",type:"Skill 2",desc:"Melempar jarum ke target yang memberikan slow dan mengurangi armor."},
+    {icon:"🎯",name:"Tiger Pace",type:"Ultimate",desc:"Hanya aktif jika semua titik lemah musuh terbuka. Melakukan serangan cepat ke semua musuh yang titik lemahnya terbuka."},
+  ]},
+  { name:"Beatrix", role:"Marksman", emoji:"🔧", lore:"Insinyur jenius yang membawa 4 jenis senjata berbeda untuk setiap situasi pertempuran.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Mechanical Genius",type:"Pasif",desc:"Memiliki 4 senjata berbeda: Renner (sniper), Nibiru (SMG), Bennett (shotgun), Wesker (rocket)."},
+    {icon:"⚡",name:"Senjata Aktif",type:"Skill 1",desc:"Berganti senjata utama antara Renner dan Nibiru, masing-masing dengan gaya bermain berbeda."},
+    {icon:"💥",name:"Senjata Sekunder",type:"Skill 2",desc:"Berganti senjata sekunder antara Bennett dan Wesker untuk situasi berbeda."},
+    {icon:"🔧",name:"Conceal",type:"Ultimate",desc:"Bersembunyi dan mengisi ulang semua senjata, kemudian menembakkan serangan massif dari semua senjata sekaligus."},
+  ]},
+  { name:"Claude", role:"Marksman", emoji:"🐵", lore:"Pencuri monyet kecil yang berkawan dengan Dexter si meerkat, bersama-sama menjadi duo perampok lucu.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Battle Side-by-Side",type:"Pasif",desc:"Dexter menyerang musuh yang sama secara otomatis, memberikan tambahan damage dan efek slow."},
+    {icon:"⚡",name:"Quickdraw",type:"Skill 1",desc:"Berpindah posisi dengan Dexter, berguna untuk escape atau reposition cepat."},
+    {icon:"🌀",name:"Battle Mirror Image",type:"Skill 2",desc:"Melempar cermin yang menciptakan ilusi Dexter, bisa menyerang musuh sendiri."},
+    {icon:"🐵",name:"Blazzing Duet",type:"Ultimate",desc:"Menembak ke semua arah bersama Dexter, memberikan damage massif ke seluruh area sekitar."},
+  ]},
+
+  // SUPPORT
+  { name:"Estes", role:"Support", emoji:"🌟", lore:"Raja Elves kuno yang mengorbankan kemampuan bertarungnya untuk menjadi penyembuh terkuat.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Scripture of Moon Elf",type:"Pasif",desc:"Secara otomatis mengisi energy code. Saat penuh, serangan dasar dan skill memancarkan cahaya penyembuh."},
+    {icon:"⚡",name:"Moonlight Immersion",type:"Skill 1",desc:"Menghubungkan diri dengan sekutu dan memberikan heal terus-menerus selama terhubung."},
+    {icon:"🌊",name:"Domain of Moon Goddess",type:"Skill 2",desc:"Menyebarkan aura suci yang memberikan slow kepada musuh di area."},
+    {icon:"🌟",name:"Blessing of Moon Goddess",type:"Ultimate",desc:"Memberikan burst heal kepada semua sekutu di sekitar, dan meningkatkan efek penyembuhan untuk beberapa detik."},
+  ]},
+  { name:"Angela", role:"Support", emoji:"💝", lore:"Boneka ajaib yang mencari cintanya, memiliki kemampuan menyatu dengan sekutu untuk melindunginya.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Smart Heart",type:"Pasif",desc:"Saat sekutu menggunakan item, Angela juga mendapat efek yang sama secara bertahap."},
+    {icon:"⚡",name:"Love Waves",type:"Skill 1",desc:"Menembakkan gelombang cinta ke depan yang memberikan slow dan stack. 5 stack = musuh diam sesaat."},
+    {icon:"❤️",name:"Puppet-on-a-String",type:"Skill 2",desc:"Memberikan shield kepada sekutu atau diri sendiri yang menyerap damage."},
+    {icon:"💝",name:"Heartguard",type:"Ultimate",desc:"Menyatu ke dalam tubuh sekutu yang dipilih, memberikan shield dan heal terus-menerus dari dalam."},
+  ]},
+  { name:"Floryn", role:"Support", emoji:"🌸", lore:"Gadis penjaga bunga ajaib yang menggunakan keindahan alam untuk menyembuhkan dan melindungi.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Dew",type:"Pasif",desc:"Setiap beberapa serangan dasar, memberikan heal kecil ke sekutu terdekat dengan HP terendah."},
+    {icon:"⚡",name:"Flower Impact",type:"Skill 1",desc:"Melempar benih yang meledak, memberikan damage ke musuh dan heal ke sekutu di area."},
+    {icon:"🌺",name:"Sprout",type:"Skill 2",desc:"Menanam bunga penyembuh di posisi tertentu yang memberikan heal berkelanjutan ke sekutu sekitar."},
+    {icon:"🌸",name:"Bloom",type:"Ultimate",desc:"Menyebarkan pollen ke semua sekutu di seluruh map, memberikan heal sekaligus meningkatkan item kuncinya."},
+  ]},
+  { name:"Mathilda", role:"Support", emoji:"🦅", lore:"Ratu Rimbawan yang menggunakan spirit hantu untuk melindungi dan mengantarkan sekutu ke medan tempur.", youtube_id:"", skills:[
+    {icon:"🔴",name:"Ancestral Guidance",type:"Pasif",desc:"Bergerak meningkatkan stack. Saat penuh, serangan dasar memancarkan spirit yang memberikan damage tambahan."},
+    {icon:"⚡",name:"Guiding Wind",type:"Skill 1",desc:"Melompat ke arah kursor sambil meninggalkan trail angin yang meningkatkan movement speed sekutu."},
+    {icon:"🌀",name:"Wind Chant",type:"Skill 2",desc:"Memberikan shield ke sekutu dan menandainya. Mathilda bisa teleport ke sekutu yang ditandai."},
+    {icon:"🦅",name:"Circling Eagle",type:"Ultimate",desc:"Mengorbit sekutu yang dipilih sambil memanggil spirit yang menyerang musuh sekitar, mengantarkan sekutu ke posisi aman."},
+  ]},
+];
+
+// ===== RENDER =====
+const grid = document.getElementById('heroGrid');
+
+function renderHeroes(filter) {
+  grid.innerHTML = '';
+  const list = filter === 'all' ? HEROES : HEROES.filter(h => h.role === filter);
+  list.forEach((hero, i) => {
+    const card = document.createElement('div');
+    card.className = 'hero-card';
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(16px)';
+    card.style.transition = `opacity .4s ${i * 30}ms, transform .4s ${i * 30}ms`;
+    card.innerHTML = `
+      <div class="hero-emoji">${hero.emoji}</div>
+      <div class="hero-name">${hero.name}</div>
+      <div class="hero-role-tag">${hero.role}</div>
+    `;
+    card.addEventListener('click', () => openModal(hero));
+    grid.appendChild(card);
+    setTimeout(() => {
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, 50 + i * 30);
+  });
+}
+
+function filterHero(role, btn) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHeroes(role);
+}
+
+// ===== MODAL =====
+function openModal(hero) {
+  document.getElementById('mEmoji').textContent = hero.emoji;
+  document.getElementById('mName').textContent = hero.name;
+  document.getElementById('mRole').textContent = `⚡ ${hero.role} — Mobile Legends`;
+  document.getElementById('mLore').textContent = hero.lore;
+
+  const skillsEl = document.getElementById('mSkills');
+  skillsEl.innerHTML = hero.skills.map(s => `
+    <div class="skill-item">
+      <div class="skill-header">
+        <div class="skill-icon">${s.icon}</div>
+        <div class="skill-name">${s.name}</div>
+        <div class="skill-type">${s.type}</div>
+      </div>
+      <div class="skill-desc">${s.desc}</div>
+    </div>
+  `).join('');
+
+  const videoEl = document.getElementById('mVideo');
+  if (hero.youtube_id && hero.youtube_id.trim() !== '') {
+    videoEl.innerHTML = `<iframe class="video-frame" src="https://www.youtube.com/embed/${hero.youtube_id}" allowfullscreen loading="lazy"></iframe>`;
+  } else {
+    videoEl.innerHTML = `
+      <div class="video-placeholder">
+        <div class="play-icon">▶</div>
+        <div>Video cara bermain <strong>${hero.name}</strong> segera hadir</div>
+        <div style="font-size:11px;margin-top:4px;opacity:.6">Tambahkan youtube_id di data hero untuk menampilkan video</div>
+      </div>`;
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ===== NAVBAR SCROLL =====
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger?.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+// Init
+renderHeroes('all');
+</script>
+</body>
+</html>
